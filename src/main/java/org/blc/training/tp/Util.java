@@ -27,5 +27,11 @@ public class Util {
     public static void checkLength(String arg, String msg){
         checkLength(arg,1, msg);
     }
+
+    static class out {
+
+        public out() {
+        }
+    }
     
 }
