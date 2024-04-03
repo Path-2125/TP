@@ -21,6 +21,7 @@ public class Macon {
         Util.out("Bonjour ce jeu permet définir la rectitude de deux murs en la comparant avec l’hypoténuse \n"
                 + "après avoir spécifier la longueur des deux murs précédant.\n");
         
+        //Récupère la donnée inscrite par l'utilisateur et l'affecte à la variable associée
         Util.out("Veuillez inscrire la longeur du mûr opposé : ");
         Scanner scan1 = new Scanner(System.in);
         ripeOpposite = Double.valueOf(scan1.next());
@@ -33,11 +34,17 @@ public class Macon {
         Scanner scan3 = new Scanner(System.in);
         wireLength = Double.valueOf(scan3.next());
         
-        
+        //Calcul la racine carrée de l'hypoténuse
         result = Math.sqrt((ripeOpposite*ripeOpposite)+(ripeAdjacent*ripeAdjacent));        
-
+        
+        //Converti le résultat de l'hypoténuse à virgule en entier 
         int roundResult = (int) Math.round(result);
-                
+        
+        /**
+         * Compare la valeur converti avec la longueur du fil
+         * Si la valeur correspond à la longueur du fil, on affiche l'hypoténuse et la longueur du fil
+         * Sinon on recalcul la nouvelle longueur du mûr opposé et adjacent
+         */
         if(roundResult != wireLength){
             Util.out("L'hypoténuse du mûr est " + roundResult +" m, la longueur du fil ne correspond pas : " + wireLength +" m.");
             
