@@ -11,6 +11,19 @@ import java.util.Scanner;
 /**
  *
  * @author patrick.poaty
+ *
+ * Options : chance avec limitation d'essai
+ *             Limiter le nombre d'essai simultanée !
+ *
+ * Options : Niveau difficulté 
+ *             Niveau 0 - 0...10 
+ *             Niveau 1 - 0...20 
+ *             Niveau 2 - 0...30
+ *             ...
+ *
+ * Options : Calculer le score de la personne Nombre pour atteindre un niveau
+ *
+ *
  */
 public class TP {
 
@@ -52,7 +65,7 @@ public class TP {
                     out("Bravo, le nombre était : " + inconnu + "!");
                 }
             }
-            
+
             response = "";
             while (!response.matches("y") && !response.matches("n")) {
                 out("Voulez-vous recommencer y ou n ?");
@@ -63,40 +76,41 @@ public class TP {
                             + "\nErreur :" + e.getMessage());
                     response = "";
                 }
-                
+
                 response = response.toLowerCase();
             }
         }
-        
+
         out("Merci d'avoir joyer à ce jeu. ");
     }
 
-    
-       /**
-         * public static void factoriel (Integer n)4{
-        
-             n = 15;
-        int fact = n;
-        int i =0;
-        out("Veuillez saisir un nombre afin de trouver sa factoriel");
-        
-        while(i<n){
-                     
-            fact = fact*(n-i);
-            out("La factoriel de "+n+" = "+fact);
-            i++;
-            
-        } return fact
-          
-        out("La factoriel du nombre" + n + " est "+ fact);
-        
-          
+    public static void mainFactoriel() {
+        Scanner scan = new Scanner(System.in);
+        Integer value = 0;
+        out("Insérer une valeur :");
+        try {
+            value = Integer.valueOf(scan.nextInt());
+        } catch (NumberFormatException e) {
+            out("Valeur de nombre attendu : " + e.getMessage());
+            return;
+        }
+        out(value + "!=" + factoriel(value));
+
     }
-         */    
-   
-    
-    public static void out(String msg){
-        
+
+    public static Integer factoriel(Integer n) {
+        int i = 1;
+        Integer value = n;
+        while (i < n) {
+            value = value * (n - i);
+            out(i + " :" + value);
+            i++;
+        }
+        return value;
+    }
+
+    public static void out(String msg) {
+
         System.out.println(msg);
     }
 }
