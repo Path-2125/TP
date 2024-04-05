@@ -30,7 +30,7 @@ public class PairOrImpair {
     
     restOfDivision = value/2;
     
-    //Permet la conversion du reste de la division en entier "c'est à dire 4.5 : il ne considérera que 4 qui est un entier"
+    //Permet la conversion du reste de la division en entier "c'est à dire 4.5 : il ne considérera 4 qui est un entier"
     int testRestOfDivision = (int)restOfDivision ;
     
     /**
