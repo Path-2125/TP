@@ -91,7 +91,6 @@ public class TP {
                     if (guessValue == secretNumber) {
                         out("");
                         out("Bravo ! Vous avez trouvé le bon nombre ! : " + secretNumber);
-//                        chance = chance - 1; // Remis à zéro de la valeur chance après avoir trouvé le résultat ; puis sortie de la boucle
                         break;
                     } else {
                         if (guessValue < secretNumber) {
