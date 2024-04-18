@@ -36,139 +36,128 @@ public class TP {
         int maxLevel = 5;
         int level = 1;
         int maxTries = 7;
-        int minRange = 0;
-        int maxRange = 10;
-        int answer = 0;
         int guessValue = 0;
-//        int chance = 0;
         int secretNumber = 0;
-        int scoreTrue = 0;
-        int scoreAfterTries = 0;
-        int scoreTotal = 0;
-        int wrongAnswer = 0;
-        int lowNumber = 0;
-        int highNumber = 0;
+        int score = 0;
+        int chance = maxTries;
 
         Scanner scan = new Scanner(System.in);
 
-        out("=|==================================================================|=");
-        out("Vous êtes dans un jeu de devinette d'un nombre.                       ");
-        out("Vous débuterez par le niveau (1) avec (" + maxTries + ")essais possible. \n"
-                + "Si vous trouvez le bon resultat vous passerez au niveau suivant    ");
-        out("ou bien vous avez le choix de débuter la partie au niveau (2)         ");
-        out("=|==================================================================|=");
+        //Récupère la valeur
+        String response = "y";
 
-        /**
-         * out(""); outNotOnLine("Vous voulez débuté par quel niveau ? : ");
-         *
-         * //Vérification de la valeur inscrite par l'utilisateur try { answer
-         * = scan.nextInt(); } catch (InputMismatchException erreur) { out("La
-         * valeur renseignée n'est pas un nombre" + "\nErreur :" +
-         * erreur.getMessage()); return; }
-         *
-         * if (answer == 1) {
-         */
-        out("");
-        out("Bienvenue au jeu de devinettes du niveau : " + level + " - Trouvez un nombre entre " + minRange + " et " + maxRange);
-
-        // Boucle de vérification par rappport au niveau max
-        while (level <= maxLevel) {
-
-            // Génération de la valeur aléatoire
-            secretNumber = (int) (Math.random() * maxRange);
-
-            // Boucle de vérification par rappport au essai de l'utilisateur
-            int chance = maxTries;
-            while (chance <= 0) {
-                out("");
-                outNotOnLine("Devinez le nombre ? : " + secretNumber);
-
-                //Vérification de la valeur inscrite par l'utilisateur
-                try {
-                    guessValue = scan.nextInt();
-                } catch (InputMismatchException erreur) {
-                    out("La valeur renseignée n'est pas un nombre"
-                            + "\nErreur :" + erreur.getMessage());
-                    return;
-                }
-
-                // 
-                if (guessValue == secretNumber) {
-                    out("");
-                    out("Bravo ! Vous avez trouvé le bon nombre ! : " + secretNumber);
-//                        chance = chance - 1; // Remis à zéro de la valeur chance après avoir trouvé le résultat ; puis sortie de la boucle
-                    break;
-                } else {
-                    if (guessValue < secretNumber) {
-                        out("\n\nTrop bas ! Essayez un nombre plus grand.");
-                    } else {
-                        out("\n\nTrop élevé ! Essayez un nombre plus petit.");
-                    }
-                    chance--; // Perte du nombre chance
-                    out("Il vous reste " + chance + " essai(s)");
-                }
-            }
+        while (response.matches("y")) {
+            out("\n=|==================================================================|=");
+            out("Vous êtes dans un jeu de devinette d'un nombre.                       ");
+            out("Vous débuterez par le niveau (1) avec (" + maxTries + ")essais possible. \n"
+                    + "Si vous trouvez le bon resultat vous passerez au niveau suivant    ");
+            out("ou bien vous avez le choix de débuter la partie au niveau (2)         ");
+            out("=|==================================================================|=");
 
             /**
-             * Comparaison de la valeur chance avec la valeur espion dans les
-             * condition d'échec Si au moins une condition d'échec est activée
-             * le nombre de point attribué sera 2 points dans le cas contraire
-             * l'utilisateur a donné la bonne information et son score passe à 5
-             * points si n'est pas rentré dans la condiction d'échec
+             * out(""); outNotOnLine("Vous voulez débuté par quel niveau ? : ");
              *
+             * //Vérification de la valeur inscrite par l'utilisateur try {
+             * answer = scan.nextInt(); } catch (InputMismatchException erreur)
+             * { out("La valeur renseignée n'est pas un nombre" + "\nErreur :" +
+             * erreur.getMessage()); return; }
+             *
+             * if (answer == 1) {
              */
-            if (chance == maxTries) {
-                scoreAfterTries += 2;
-            } else {
-                scoreTrue += 5;
-            }
+            out("");
+            out("Bienvenue au jeu de devinettes du niveau : " + level + " - Trouvez un nombre entre " + 0 + " et " + (level * 10));
 
-            //Condition ou l'utilisateur a éppuisé son nombre d'essai
-            if (chance == maxTries) {
-                out("");
-                out("Dommage ! Le nombre était " + secretNumber);
-                break;
-            }
+            // Boucle de vérification par rappport au niveau max
+            while (chance != 0) {
 
-            /**
-             * Condition qui permet de passer au niveau suivant si l'utilisateur
-             * a trouvé la bonne réponse peut importe la phase d'échec ou de
-             * valeur trouvée en un seul choix incrémentation de la valeur
-             * maxRange et du level pour le tour suivant
-             */
-            if (level < maxLevel) {
+                // Génération de la valeur aléatoire
+                secretNumber = (int) (Math.random() * (level * 10));
 
-                level += 1;
-                minRange = 0;
-                maxRange += 10;
-                lowNumber = 0;
-                highNumber = 0;
+                boolean firstTime = true;
+                // Boucle de vérification par rappport au essai de l'utilisateur
+                while (chance > 0) {
+                    outNotOnLine("\nDevinez le nombre ? : ");
 
-                if (chance == chance) {
-                    scoreTotal = scoreTrue + scoreAfterTries;
-                    out("Vous avez encore " + maxTries + " essai(s) et votre score est de : " + scoreTotal + " points.");
-                    out("level :" + level);
-                } else {
-                    scoreTotal = scoreAfterTries + scoreTrue;
-                    out("Vous avez encore " + (maxTries - chance) + " essai(s) et votre score est de : " + scoreTotal + " points.");
-                    out("level :" + level);
+                    //Vérification de la valeur inscrite par l'utilisateur
+                    try {
+                        guessValue = scan.nextInt();
+                    } catch (InputMismatchException erreur) {
+                        out("La valeur renseignée n'est pas un nombre"
+                                + "\nErreur :" + erreur.getMessage());
+                        return;
+                    }
+
+                    // 
+                    if (guessValue == secretNumber) {
+                        out("");
+                        out("Bravo ! Vous avez trouvé le bon nombre ! : " + secretNumber);
+//                        chance = chance - 1; // Remis à zéro de la valeur chance après avoir trouvé le résultat ; puis sortie de la boucle
+                        break;
+                    } else {
+                        if (guessValue < secretNumber) {
+                            out("\nTrop bas ! Essayez un nombre plus grand.");
+                        } else {
+                            out("\nTrop élevé ! Essayez un nombre plus petit.");
+                        }
+                        chance--; // Perte du nombre chance
+                        firstTime = false;
+
+                        if (chance > 0) {
+                            out("Il vous reste " + chance + " essai(s)");
+                        }
+                    }
                 }
 
-            } else {
-                out("");
-                out("Félicitations ! Vous avez terminé tous les niveaux.");
-                break;
+                // Gestion du score
+                score += chance;
+                if (firstTime) {
+                    score += 2;
+                }
+
+                if (chance > 0) {
+                    out("Vous avez encore " + chance + " essai(s) et votre score est de : " + score + " points.");
+                } else {
+                    out("Votre nombre d'essai est " + chance + " et votre score de : " + score + " points.");
+                }
+
+                /**
+                 * Condition qui permet de passer au niveau suivant si
+                 * l'utilisateur a trouvé la bonne réponse peut importe la phase
+                 * d'échec ou de valeur trouvée en un seul choix incrémentation
+                 * de la valeur maxRange et du level pour le tour suivant
+                 */
+                if (chance > 0) {
+                    level++;
+                    out("\nVous passez au niveau : " + level + " - du jeu. Trouvez un nombre entre " + 0 + " et " + 10 * level);
+                } else {
+                    out("Dommage ! Le nombre était " + secretNumber);
+                    break;
+                }
             }
-            out("");
-            out("Vous passez au niveau : " + level + " - du jeu. Trouvez un nombre entre " + minRange + " et " + maxRange);
+
+            response = "";
+            while (!response.matches("y") && !response.matches("n")) {
+                out("\nVoulez-vous recommencer y ou n ?");
+                try {
+                    response = scan.next();
+                } catch (NoSuchElementException e) {
+                    out("Valeur renseigné ne peut être convertie"
+                            + "\nErreur :" + e.getMessage());
+                    response = "";
+                }
+                response = response.toLowerCase();
+                
+                // Réinitialisation des variables jeu au paramètre initiaux
+                level = 1;
+                chance = maxTries;
+                score = 0;
+                
+                
+            }
+            
+            
         }
 
-        /**
-         * } else if (answer == 2) { out("Niveau " + level + " - Trouvez un
-         * nombre entre " + minRange + " et " + maxRange); } else {
-         *
-         * }
-         */
     }
 
     public static void gameGuessMyNnumbe() {
