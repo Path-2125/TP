@@ -86,6 +86,7 @@ public class TP {
         int score = 0;
         int chance = 20;
         Boolean isQuit = false;
+        
         /**
          * Boucle principale de terminaison du programme
          */
