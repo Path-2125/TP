@@ -3,8 +3,10 @@
  */
 package org.blc.training.tp;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -21,30 +23,239 @@ import java.util.Scanner;
  *
  *
  */
+/**
+ * Vous devez retrouver la suite d'une séquence de couleur. Les couleurs
+ * possible sont (rouge, vert, bleu, orange, marron, noire). La séquence peut
+ * être répétitive. L'utilisateur devra spécifier la séquence des couleurs.
+ * <p>
+ * ok : Un système de niveau permet de démarrer à une séquence de 3 couleurs à
+ * retrouver
+ * <p>
+ * L'utilisateur pasera au niveau suivant dès que la séquence est trouvée. Le
+ * niveau suivant sera incrément d'une séquence complémentaire.
+ * <p>
+ * Un score sera attribué en fonction du nombre d'essai effecuté au niveau.
+ * <p>
+ * ok : Un nombre chance max permet à l'utilisateur de continuer le jeux.
+ * <p>
+ * ok : Bien évidement l'utilisateur peu arrêter à tout instant le jeux.
+ * <p>
+ * ok : Il peut également poursuivre (recommencer)
+ * <p>
+ * Example :
+ * <p>
+ * Niveau 1 : le système gènre la séquence
+ * <p>
+ * ok : | x | x | x | correspondant à | b | v | o |
+ * <p>
+ * ok : L'utilisateur propose la séquence séparer comme suit v;n;r
+ * <p>
+ * Vous devez lui répondre | 1 | x | x | : le 1 permet d'indiquer une valeur
+ * bonne mais mal positionnée<p>
+ * Essai suivant l'utilisateur indique o;v;m >> | 1 | v | x | ...
+ * <p>
+ * si résultat ok >> | b | v | o |
+ * <p>
+ * Niveau 2 : le système gènere la séquence du niveau
+ * <p>
+ * | x | x | x | x | correspondant à | m | o | n | v |
+ * <p>
+ * ...
+ *
+ * <p>
+ * Astuces : utilisation de tableau argc[] >> TypeVariable n[tailleTableau];
+ */
 public class TP {
 
     public static void main(String[] args) {
 
         // Retrouver un nombre de 1 à 10
-        gameGuessNumber();
+        trouverLaSuiteDeCouleur();
 
     }
 
-    public static void gameGuessNumber() {
-
+    public static void trouverLaSuiteDeCouleur() {
         // Déclaration de vairable
-        int maxLevel = 5;
-        int level = 1;
-        int maxTries = 7;
-        int guessValue = 0;
-        int secretNumber = 0;
-        int score = 0;
-        int chance = maxTries;
 
         Scanner scan = new Scanner(System.in);
 
         //Récupère la valeur
         String response = "y";
+
+        int level = 1;
+        int score = 0;
+        int chance = 20;
+        Boolean isQuit = false;
+        /**
+         * Boucle principale de terminaison du programme
+         */
+        while (response.matches("y") && !isQuit) {
+             ? out("\n=|==================================================================|=");
+             ? out("Vous êtes dans un jeu de devinette d'un nombre.                       ");
+             ? out("Vous débuterez par le niveau (1) avec (" + maxTries + ")essais possible. \n"
+                    + "Si vous trouvez le bon resultat vous passerez au niveau suivant    ");
+             ? out("ou bien vous avez le choix de débuter la partie au niveau (2)         ");
+             ? out("=|==================================================================|=");
+             ? out("");
+             ? out("Bienvenue au jeu de devinettes du niveau : " + level + " - Trouvez un nombre entre " + 0 + " et " + (level * 10));
+
+            int sequenceActuelle = 3;
+
+            // Boucle de niveau de séquence utilusateur 
+            while (chance != 0 && !isQuit) {
+
+                // Génération de la séquence de couleur aléatoire
+                String[] sequenceCouleurs = generateRandomSeqColors(sequenceActuelle);
+                String[] colorSeqUser = generateStartSeqColors(sequenceActuelle);
+                boolean firstTime = true;
+
+                // Boucle de chance utilisateur
+                while (chance > 0 && !isQuit) {
+                    //Affichage de la découverte de séquence actuelle
+                    colorShowSeqFind(colorSeqUser);
+
+                    //Vérification de la valeur inscrite par l'utilisateur
+                    String seqString = "";
+
+                    Boolean isCorrectInput = false;
+                    int i = 0; //Loop test
+
+                    // Boucle de validation de saisie des utilusateurs
+                    while (!isCorrectInput && !isQuit) { // Parce que les informatiosn saisie ne sont pas cohérente par rapport à un nombre ou à quitter
+
+                        seqString = scan.nextLine();
+                        isCorrectInput = colorIsInputCorect(seqString);
+                        String msgError = "Vous devez renseigner la séquence comme suit:  exemple : v;n;r  correspendant respectivement à vert;noir;rouge. Ou \"q\" pour quitter";
+
+                        if (!isCorrectInput) {
+                            i++;
+
+                            //Aide l'utilisateur après 3 erreurs
+                            if (i >= 3) {
+
+                                out(msgError);
+                                i = 0;
+                            }
+                        }
+
+                        //Vérifie que l'utilisateur ne souhaite pas quitter
+                        if (seqString != null) {
+                            if (seqString.toLowerCase().substring(0, 1).matches("q")) {
+                                isQuit = true;
+                            } else {
+                                out(msgError);
+                            }
+                        } else {
+                            out(msgError);
+                        }
+
+                    }
+
+                    // Validation du résultat en cas de saisie correcte
+                    if (isCorrectInput) {
+
+                    }
+
+                    // Gestion du score
+                    score += chance;
+
+                    if (firstTime) {
+                        score += 2;
+                    }
+
+                    if (chance > 0) {
+                        out("Vous avez encore " + chance + " essai(s) et votre score est de : " + score + " points.");
+                    } else {
+                        out("Votre nombre d'essai est " + chance + " et votre score de : " + score + " points.");
+                    }
+
+                }
+
+                if (chance <= 0) {
+                    out("Désoler, vous avez perdu ! Vous n'avez plus de chance.");
+                }
+                /**
+                 * Recommence la partie depuis le début ou arrêter
+                 */
+                yesno = "";
+                while (!yesno.matches("y") && !yesno.matches("n")) {
+                    out("Voulez-vous recommencer ? y/n");
+                    try {
+                        yesno = scan.next();
+                    } catch (NoSuchElementException e) {
+                        out("Merci de specifier une information correct ! ");
+                        yesno = "";
+                    }
+                    yesno = yesno.toLowerCase();
+                    outn("YesNo tolowerCase :" + yesno + " >> " + yesno.toLowerCase());
+                }
+            }
+        }
+    }
+
+    public static void trouverLaSuiteDeCouleurPatrick() {
+
+        // Tableau de couleurs
+        String[] colors = {"rouge", "vert", "bleu", "orange", "marron", "noire"};
+
+        Scanner scan = new Scanner(System.in);
+        Random aleat = new Random();
+
+        int level = 1;
+        int sequence = 3;
+        int i = 0;
+
+        String findValue = "";
+        String answer = "";
+
+        out("Bienvenue au jeu de devinettes de couleur, vous êtes au niveau : " + level + " \n"
+                + "- Trouvez les séquences de(" + sequence + ")couleurs parmis ces couleurs " + Arrays.toString(colors));
+        // Générer la séquence de couleurs
+        String[] sequenceCouleurs = new String[sequence];
+
+        /**
+         * gGeneration d'un tableau de séquence de couleurs aéatoire en fonction
+         * deu niveau de séquence et des couleurs disponible
+         */
+        while (i < sequence) {
+
+            int choice = (int) (Math.random() * colors.length);
+            //findValue = colors[choice] + " "; //affiche les couleurs avec un espace
+            sequenceCouleurs[i] = colors[choice];
+
+            outNotOnLine(sequenceCouleurs[i] + ","); // test d'afficahage de couleur
+            //outNotOnLine(findValue); // test d'afficahage de couleur
+            i++;
+        }
+
+        out("\nVeuillez inscrire (" + sequence + ") couleurs !!! : ");
+        answer = scan.nextLine();
+        String[] couleursProposees = answer.split(",");
+
+        //Vérifie la correspondance de la liste de valeurs proposé aléatoirement avec celle inscrite
+        if (Arrays.asList(sequenceCouleurs).contains(couleursProposees)) {
+            out("C'est bon !");
+        } else {
+            out("C'est pas bon.");
+        }
+
+    }
+
+    public static void gameGuessNumber() {
+        // Déclaration de vairable
+        int maxLevel = 5;
+        int maxTries = 7;
+        int guessValue = 0;
+        int secretNumber = 0;
+
+        Scanner scan = new Scanner(System.in);
+
+        //Récupère la valeur
+        String response = "y";
+
+        int level = 1;
+        int score = 0;
+        int chance = maxTries;
 
         while (response.matches("y")) {
             out("\n=|==================================================================|=");
@@ -54,16 +265,6 @@ public class TP {
             out("ou bien vous avez le choix de débuter la partie au niveau (2)         ");
             out("=|==================================================================|=");
 
-            /**
-             * out(""); outNotOnLine("Vous voulez débuté par quel niveau ? : ");
-             *
-             * //Vérification de la valeur inscrite par l'utilisateur try {
-             * answer = scan.nextInt(); } catch (InputMismatchException erreur)
-             * { out("La valeur renseignée n'est pas un nombre" + "\nErreur :" +
-             * erreur.getMessage()); return; }
-             *
-             * if (answer == 1) {
-             */
             out("");
             out("Bienvenue au jeu de devinettes du niveau : " + level + " - Trouvez un nombre entre " + 0 + " et " + (level * 10));
 
@@ -74,9 +275,10 @@ public class TP {
                 secretNumber = (int) (Math.random() * (level * 10));
 
                 boolean firstTime = true;
+
                 // Boucle de vérification par rappport au essai de l'utilisateur
                 while (chance > 0) {
-                    outNotOnLine("\nDevinez le nombre ? : ");
+                    outNotOnLine("\nDevinez le nombre ? : " + secretNumber);
 
                     //Vérification de la valeur inscrite par l'utilisateur
                     try {
@@ -87,12 +289,12 @@ public class TP {
                         return;
                     }
 
-                    // 
                     if (guessValue == secretNumber) {
                         out("");
                         out("Bravo ! Vous avez trouvé le bon nombre ! : " + secretNumber);
                         break;
                     } else {
+
                         if (guessValue < secretNumber) {
                             out("\nTrop bas ! Essayez un nombre plus grand.");
                         } else {
@@ -109,6 +311,7 @@ public class TP {
 
                 // Gestion du score
                 score += chance;
+
                 if (firstTime) {
                     score += 2;
                 }
@@ -145,18 +348,9 @@ public class TP {
                     response = "";
                 }
                 response = response.toLowerCase();
-                
-                // Réinitialisation des variables jeu au paramètre initiaux
-                level = 1;
-                chance = maxTries;
-                score = 0;
-                
-                
+                chance = 0;
             }
-            
-            
         }
-
     }
 
     public static void gameGuessMyNnumbe() {
