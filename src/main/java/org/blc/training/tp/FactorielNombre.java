@@ -17,11 +17,12 @@ public class FactorielNombre {
         int userChoiceMin = 1;
         int userChoiceMax =10;
         String Answer = "";
+        int factorielNumber =0;
         
         //Affichage du message à l'utilisateur
-        Util.out ("Bonjour, ceci est un jeu qui consiste à trouver la factoriel de votre nombre inscrire \n"
+        Util.out ("Bonjour, ceci est un jeu qui consiste à trouver la factoriel de votre nombre inscrit. \n"
                 + " votre nombre doit être entre 1 et 10.");
-        Util.out("Veuillez inscrire votre nombre ? : ");
+        Util.out(" Veuillez inscrire votre nombre ? : ");
         
         // Récupération de la donnée inscrite au clavier
         Scanner scan = new Scanner(System.in) ;
@@ -29,9 +30,58 @@ public class FactorielNombre {
         
         int choice = Integer.valueOf(Answer); // Convertion de la réponse entrée en entier
         
-        if(choice>userChoiceMin && choice<userChoiceMax){
+        if(choice>=userChoiceMin && choice<=userChoiceMax){
            
-            Util.out("ça marche");
+            
+            factorielNumber *= choice;
+            
+            /**
+            if (choice == 1 ){
+                factorielNumber = choice;
+            }
+            
+            if (choice == 2 ){
+                factorielNumber = choice;
+            }
+            
+            if (choice == 3 ){
+                factorielNumber = choice*2;
+            }
+            
+            if (choice == 4 ){
+                factorielNumber = choice*3*2;
+            }
+            
+            if (choice == 5 ){
+                factorielNumber = choice*4*3*2;
+            }
+            
+            if (choice == 6 ){
+                factorielNumber = choice;
+            }
+            
+            if (choice == 7 ){
+                factorielNumber = choice;
+            }
+            
+            if (choice == 8 ){
+                factorielNumber = choice;
+            }
+            
+            if (choice == 9 ){
+                factorielNumber = choice;
+            }
+            if (choice == 10 ){
+                factorielNumber = choice;
+            }
+            **/
+            
+            
+            
+            
+            
+            Util.out("La factoriel de : "+choice+ "! = "+factorielNumber);
+            
         }
         else{
             Util.out("La valeur inscrite ne correspond pas à l'intervalle de nombre choisi pour le calcul de la factoriel.\n "
