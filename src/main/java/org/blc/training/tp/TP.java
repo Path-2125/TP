@@ -80,38 +80,33 @@ public class TP {
         Scanner scan = new Scanner(System.in);
 
         //Récupère la valeur
-        String response = "y";
+        String yesno = "y";
 
         int level = 1;
         int score = 0;
         int chance = 20;
         Boolean isQuit = false;
-        
+        int nowSequence = 3;
+
         /**
          * Boucle principale de terminaison du programme
          */
-        while (response.matches("y") && !isQuit) {
-             ? out("\n=|==================================================================|=");
-             ? out("Vous êtes dans un jeu de devinette d'un nombre.                       ");
-             ? out("Vous débuterez par le niveau (1) avec (" + maxTries + ")essais possible. \n"
-                    + "Si vous trouvez le bon resultat vous passerez au niveau suivant    ");
-             ? out("ou bien vous avez le choix de débuter la partie au niveau (2)         ");
-             ? out("=|==================================================================|=");
-             ? out("");
-             ? out("Bienvenue au jeu de devinettes du niveau : " + level + " - Trouvez un nombre entre " + 0 + " et " + (level * 10));
+        while (yesno.matches("y") && !isQuit) {
 
-            int sequenceActuelle = 3;
+            out("Bienvenue au jeu de devinettes de couleur, vous êtes au niveau : " + level + " \n"
+                    + "- Trouvez les séquences de(" + nowSequence + ")couleurs parmis ces couleurs " + Arrays.toString(colorsTab));
 
             // Boucle de niveau de séquence utilusateur 
             while (chance != 0 && !isQuit) {
 
                 // Génération de la séquence de couleur aléatoire
-                String[] sequenceCouleurs = generateRandomSeqColors(sequenceActuelle);
-                String[] colorSeqUser = generateStartSeqColors(sequenceActuelle);
+                String[] colorsSequence = generateRandomSeqColors(nowSequence);
+                String[] colorSeqUser = generateStartSeqColors(nowSequence);
                 boolean firstTime = true;
 
                 // Boucle de chance utilisateur
                 while (chance > 0 && !isQuit) {
+
                     //Affichage de la découverte de séquence actuelle
                     colorShowSeqFind(colorSeqUser);
 
@@ -125,15 +120,15 @@ public class TP {
                     while (!isCorrectInput && !isQuit) { // Parce que les informatiosn saisie ne sont pas cohérente par rapport à un nombre ou à quitter
 
                         seqString = scan.nextLine();
-                        isCorrectInput = colorIsInputCorect(seqString);
-                        String msgError = "Vous devez renseigner la séquence comme suit:  exemple : v;n;r  correspendant respectivement à vert;noir;rouge. Ou \"q\" pour quitter";
+                        isCorrectInput = colorIsInputCorrect(seqString);
+                        String msgError = "Vous devez renseigner la séquence comme suit:  exemple : v;n;r  \n"
+                                + "correspendant respectivement à vert;noir;rouge. Ou \"q\" pour quitter";
 
                         if (!isCorrectInput) {
                             i++;
 
                             //Aide l'utilisateur après 3 erreurs
                             if (i >= 3) {
-
                                 out(msgError);
                                 i = 0;
                             }
@@ -154,7 +149,11 @@ public class TP {
 
                     // Validation du résultat en cas de saisie correcte
                     if (isCorrectInput) {
-
+                       
+                        
+                        
+                        nowSequence++;
+                        out("Bravo, vous avez trouvez les séquences " + colorsSequence + " ; vous passez au niveau - "+nowSequence);
                     }
 
                     // Gestion du score
@@ -188,9 +187,10 @@ public class TP {
                         yesno = "";
                     }
                     yesno = yesno.toLowerCase();
-                    outn("YesNo tolowerCase :" + yesno + " >> " + yesno.toLowerCase());
+                    out("YesNo tolowerCase :" + yesno + " >> " + yesno.toLowerCase());
                 }
             }
+
         }
     }
 
