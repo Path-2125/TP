@@ -31,24 +31,25 @@ import java.util.Scanner;
  * ok : Un système de niveau permet de démarrer à une séquence de 3 couleurs à
  * retrouver
  * <p>
- * L'utilisateur pasera au niveau suivant dès que la séquence est trouvée. Le
- * niveau suivant sera incrément d'une séquence complémentaire.
+ * Attente correction : L'utilisateur passera au niveau suivant dès que la
+ * séquence est trouvée. Le niveau suivant sera incrément d'une séquence
+ * complémentaire.
  * <p>
  * Un score sera attribué en fonction du nombre d'essai effecuté au niveau.
  * <p>
- * ok : Un nombre chance max permet à l'utilisateur de continuer le jeux.
+ * ok : Un nombre chance max permet à l'utilisateur de continuer le jeu.
  * <p>
- * ok : Bien évidement l'utilisateur peu arrêter à tout instant le jeux.
+ * ok : Bien évidement l'utilisateur peut arrêter à tout instant le jeu.
  * <p>
  * ok : Il peut également poursuivre (recommencer)
  * <p>
  * Example :
  * <p>
- * Niveau 1 : le système gènre la séquence
+ * Niveau 1 : le système génère la séquence
  * <p>
  * ok : | x | x | x | correspondant à | b | v | o |
  * <p>
- * ok : L'utilisateur propose la séquence séparer comme suit v;n;r
+ * ok : L'utilisateur propose la séquence séparée comme suit v;n;r
  * <p>
  * Vous devez lui répondre | 1 | x | x | : le 1 permet d'indiquer une valeur
  * bonne mais mal positionnée<p>
@@ -56,7 +57,7 @@ import java.util.Scanner;
  * <p>
  * si résultat ok >> | b | v | o |
  * <p>
- * Niveau 2 : le système gènere la séquence du niveau
+ * Niveau 2 : le système génère la séquence du niveau
  * <p>
  * | x | x | x | x | correspondant à | m | o | n | v |
  * <p>
@@ -66,6 +67,8 @@ import java.util.Scanner;
  * Astuces : utilisation de tableau argc[] >> TypeVariable n[tailleTableau];
  */
 public class TP {
+
+    public static String[] colors = {"rouge", "vert", "bleu", "orange", "marron", "noire"};
 
     public static void main(String[] args) {
 
@@ -82,48 +85,51 @@ public class TP {
         //Récupère la valeur
         String yesno = "y";
 
-        int level = 1;
-        int score = 0;
-        int chance = 20;
         Boolean isQuit = false;
-        int nowSequence = 3;
 
         /**
          * Boucle principale de terminaison du programme
          */
         while (yesno.matches("y") && !isQuit) {
+            int nowSequence = 3;
+            int level = 1;
+            int score = 0;
+            int chance = 20;
 
             out("Bienvenue au jeu de devinettes de couleur, vous êtes au niveau : " + level + " \n"
-                    + "- Trouvez les séquences de(" + nowSequence + ")couleurs parmis ces couleurs " + Arrays.toString(colorsTab));
+                    + "- Trouvez les séquences de(" + nowSequence + ")couleurs parmis ces couleurs " + Arrays.toString(TP.colors));
 
             // Boucle de niveau de séquence utilusateur 
             while (chance != 0 && !isQuit) {
 
                 // Génération de la séquence de couleur aléatoire
                 String[] colorsSequence = generateRandomSeqColors(nowSequence);
+                String[] colorsSeqResult = generateStartSeqColors(nowSequence);
                 String[] colorSeqUser = generateStartSeqColors(nowSequence);
-                boolean firstTime = true;
+
+                boolean isSeqFind = false;
 
                 // Boucle de chance utilisateur
-                while (chance > 0 && !isQuit) {
+                while (chance > 0 && !isQuit && !isSeqFind) {
 
-                    //Affichage de la découverte de séquence actuelle
-                    colorShowSeqFind(colorSeqUser);
-
+                    //Test si sequence de resultat = sequence tampon / Affichage de la découverte de séquence actuelle
+                    out(colorsSeqResult);
                     //Vérification de la valeur inscrite par l'utilisateur
                     String seqString = "";
 
                     Boolean isCorrectInput = false;
                     int i = 0; //Loop test
 
+                    
                     // Boucle de validation de saisie des utilusateurs
                     while (!isCorrectInput && !isQuit) { // Parce que les informatiosn saisie ne sont pas cohérente par rapport à un nombre ou à quitter
 
                         seqString = scan.nextLine();
-                        isCorrectInput = colorIsInputCorrect(seqString);
+                        isCorrectInput = colorIsInputCorrect(seqString, nowSequence);
                         String msgError = "Vous devez renseigner la séquence comme suit:  exemple : v;n;r  \n"
                                 + "correspendant respectivement à vert;noir;rouge. Ou \"q\" pour quitter";
 
+                        
                         if (!isCorrectInput) {
                             i++;
 
@@ -139,44 +145,48 @@ public class TP {
                             if (seqString.toLowerCase().substring(0, 1).matches("q")) {
                                 isQuit = true;
                             } else {
-                                out(msgError);
+//                                out(msgError);
                             }
                         } else {
                             out(msgError);
                         }
-
-                    }
+                    }// End Boucle de validation de saisie des utilusateurs
 
                     // Validation du résultat en cas de saisie correcte
                     if (isCorrectInput) {
-                       
-                        
-                        
-                        nowSequence++;
-                        out("Bravo, vous avez trouvez les séquences " + colorsSequence + " ; vous passez au niveau - "+nowSequence);
+
+                        //Convertir saisie user en tab de donnees
+                        colorSeqUser = seqString.split(";");
+                        //Retrouve le resultat
+                        colorsSeqResult = compareColors(colorSeqUser, colorsSequence);
+                        isSeqFind = checkSequenceUser(colorSeqUser, colorsSequence);
+
+                        //En cas de resultat correct , passe au niveau suivant
+                        if (isSeqFind) {
+                            nowSequence++;
+                            level++;
+                            out("Bravo, vous avez trouvez les séquences " + tabToString(colorsSequence) + " ; vous passez au niveau - " + level);
+                            score += chance * level;
+                        } else {
+                            // DEcompte de points
+
+                            chance--;
+                            out("Sequence entree n est pas correcte [chance :" + chance + ", Niveau : " + level + " , Score : " + score + "]");
+                            if (chance <= 0) {
+                                out("Désoler, vous avez perdu ! Vous n'avez plus de chance. REsultat attendu :" + tabToString(colorsSequence));
+                            }
+                        }
                     }
 
-                    // Gestion du score
-                    score += chance;
+                }// Boucle chance user
 
-                    if (firstTime) {
-                        score += 2;
-                    }
+            }//End Boucle de niveau de séquence utilusateur
 
-                    if (chance > 0) {
-                        out("Vous avez encore " + chance + " essai(s) et votre score est de : " + score + " points.");
-                    } else {
-                        out("Votre nombre d'essai est " + chance + " et votre score de : " + score + " points.");
-                    }
+            /**
+             * Recommence la partie depuis le début ou arrêter
+             */
+            if (chance <= 0 && !isQuit) {
 
-                }
-
-                if (chance <= 0) {
-                    out("Désoler, vous avez perdu ! Vous n'avez plus de chance.");
-                }
-                /**
-                 * Recommence la partie depuis le début ou arrêter
-                 */
                 yesno = "";
                 while (!yesno.matches("y") && !yesno.matches("n")) {
                     out("Voulez-vous recommencer ? y/n");
@@ -190,8 +200,73 @@ public class TP {
                     out("YesNo tolowerCase :" + yesno + " >> " + yesno.toLowerCase());
                 }
             }
-
         }
+
+    }
+
+    public static void out(String[] tabSTR) {
+        int i = 0;
+        while (i < tabSTR.length) {
+            System.out.print(tabSTR[i] + ", ");
+            i++;
+        }
+
+    }
+
+    public static String tabToString(String[] tabSTR) {
+        String str = "";
+        int i = 0;
+        while (i < tabSTR.length) {
+            str += (tabSTR[i] + ", ");
+
+            i++;
+        }
+
+        return str;
+    }
+
+    /**
+     * Méthode génération séquence couleurs
+     *
+     * @param sizeSequence est un numéro qui définit la taille de la suite de la
+     * séquence
+     * @return une suite de couleurs aléatoire de la taille de la séquence
+     */
+    public static String[] generateRandomSeqColors(int sizeSequence) {
+
+        String[] tabColors = new String[sizeSequence];  // Initialisation du tableau avec une taille de 5
+
+        int i = 0;
+
+        while (i < sizeSequence) {
+            int choice = (int) (Math.random() * colors.length);
+            tabColors[i] = colors[choice].substring(0, 1);// Génère un tab avec les premiers caractères
+            i++;
+        }
+        return tabColors;
+    }
+
+// Méthode génération séquence vide
+    public static String[] generateStartSeqColors(int param) {
+
+        // Validation donnée d'entrée
+        if (param < 1) {
+            TP.out("Error : param doit être >= à 1");
+            return null;
+        }
+
+        String[] tab = new String[param];  // Initialisation du tableau avec une taille de 5
+
+        int i = 0;
+        String code = "x|";
+
+        while (i < param) {
+
+            tab[i] = code;
+            i++;
+        }
+
+        return tab;
     }
 
     public static void trouverLaSuiteDeCouleurPatrick() {
@@ -633,6 +708,7 @@ public class TP {
             i++;
         }
         return value;
+
     }
 
     public static void out(String msg) {
@@ -644,4 +720,115 @@ public class TP {
 
         System.out.print(msg);
     }
+
+    private static void colorShowSeqFind(String[] colorsSeqResult) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private static Boolean colorIsInputCorrect(String seqString, int sizeSequence) {
+
+        if (seqString == null) {
+            out("texte nul !!");
+            return false;
+        }
+
+        // Comparaison du bon nombre de caractère isncrit par le user
+        if (seqString.length() != (sizeSequence + sizeSequence - 1)) {
+            out("mauvais nbre de caractère");
+            return false;
+        }
+
+        String[] d = seqString.split(";");
+
+        if (d.length != sizeSequence) {
+            out("taille de séquence différent");
+            return false;
+        }
+
+        int i = 0;
+
+        // Boucle qui parcours les différenets champs séparé par les ";"
+        while (i < d.length) {
+            int j = 0;
+            Boolean exist = false;
+            // Boucle qui parcours les différenets champs de couleurs 
+            while (j < colors.length && !exist) {
+
+                if (d[i].matches(colors[j].substring(0, 1))) {
+                    exist = true;
+                }
+
+                j++;
+            }
+            i++;
+            
+            if (!exist){
+                out("Couleur n'existe pas ");
+                return false ;
+            }
+        }
+        return true;
+    }
+
+    public static String[] compareColors(String[] colorSeqUser, String[] colorsSequence) {
+        int i = 0;
+        String[] r = new String[colorsSequence.length];
+
+        //Boucle sur la 1ere valeur saisie de l utilisateur
+        while (i < colorsSequence.length) {
+
+            //Test si index actuel est identique 
+            if (colorsSequence[i].matches(colorSeqUser[i])) {
+                r[i] = colorsSequence[i];
+            } else {
+                // Boucle sur les autres positions du tableau
+                int j = 0;
+                while (j < colorsSequence.length) {
+
+                    if (colorsSequence[j].matches(colorSeqUser[i])) {
+                        r[i] = "1";
+                        j = colorsSequence.length;//permet de pouvoir interrompre la boucle par la suite
+                    } else {
+                        r[i] = "x";
+                    }
+
+                    j++;
+                }
+
+            }
+            i++;
+
+        }
+        return r;
+    }
+
+    public static Boolean checkSequenceUser(String[] colorSeqUser, String[] colorsSequence) {
+        int i = 0;
+        int r = 0;
+
+        //Boucle sur la 1ere valeur saisie de l utilisateur
+        while (i < colorsSequence.length) {
+
+            //Test si index actuel est identique 
+            if (colorsSequence[i].matches(colorSeqUser[i])) {
+                r++;
+            }
+
+            i++;
+
+        }
+
+        return r == colorsSequence.length;
+
+    }
+
+    private static String[] convertColorsStringsToTabColors(String seqString) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /**
+     *
+     * @param seqString
+     * @return
+     */
 }
